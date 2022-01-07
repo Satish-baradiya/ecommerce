@@ -15,5 +15,11 @@ def cart(request):
 
 
 def checkout(request):
-    context = {}
+    if request.user.is_authenticated:
+        customer=request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer) 
+        items = order.Orderitem_set.all()
+    else:
+        items = []
+    context = {'items':items}
     return render(request, "store/checkout.html", context)
